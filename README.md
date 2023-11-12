@@ -1,6 +1,6 @@
-# MariaDB Database Backup Script
+# MariaDB Database Backup and Remote Transfer Script
 
-This repository contains a Bash script to backup a MariaDB database. The script generates a SQL dump of the specified database and stores it in a designated backup directory. Also included are instructions for setting up a cron job to run this script at specific hours.
+This repository contains a Bash script for backing up a MariaDB database and optionally transferring it to a remote server. The script generates a SQL dump of the specified database, can transfer it to a remote server using SCP, and stores it in a designated backup directory if the transfer fails.
 
 ## Getting Started
 
@@ -24,21 +24,26 @@ chmod +x backup.sh
 
 ## Configuration
 
-Open the `backup.sh` script with your preferred text editor. Replace `DB_USER`, `DB_PASSWORD`, `DB_NAME`, and `BACKUP_DIR` with your actual database username, password, database name, and the path to your backup directory, respectively.
+Edit the backup.sh script with your preferred text editor. Set your database credentials, backup directory, and remote server SSH details:
 
 ```bash
-# Database credentials
+## Database credentials
 DB_USER='your_user'
 DB_PASSWORD='your_password'
 DB_NAME='your_database'
 
-# Backup directory
+# Backup directory (used if remote transfer fails)
 BACKUP_DIR='/path/to/your/backup/directory'
+
+# Remote server SSH details
+REMOTE_SSH_HOST='ssh_host'
+REMOTE_SSH_USER='ssh_user'
+REMOTE_SSH_DIR='remote_directory'
 ```
 
-## Run the Backup Script
+## Running the Backup Script
 
-Run the script manually to test the backup:
+Run the script manually to test the backup and remote transfer:
 
 ```bash
 ./backup.sh
@@ -46,7 +51,7 @@ Run the script manually to test the backup:
 
 ## Setting Up the Cron Job
 
-To set up a cron job to automate the backup process:
+To automate the backup process:
 
 1. Open your crontab file:
 
@@ -54,16 +59,16 @@ To set up a cron job to automate the backup process:
 crontab -e
 ```
 
-2. Add the following line to schedule the job to run at 3 AM every day (replace `/path/to/your/backup.sh` with the actual path to the script):
+2. Add a line to schedule the job (e.g., at 3 AM daily). Replace /path/to/your/backup.sh with the actual path to the script:
 
 ```bash
 0 3 * * * /path/to/your/backup.sh
 ```
 
-Save and exit the editor. The cron job is now set up.
+Save and exit. Your cron job is now set up.
 
 ## Conclusion
 
-This script simplifies the process of backing up a MariaDB database. By scheduling a cron job, you can automate this process to ensure that your database is backed up regularly. For further automation, consider adding script that removes backups older than a certain date to prevent storage overflow.
+This script provides a convenient way to back up a MariaDB database and transfer it to a remote server. It's designed to ensure data safety by keeping a local copy if the remote transfer fails. Regular automated backups via a cron job can help maintain your database's integrity.
 
-If you encounter any issues or have any improvements, feel free to create an issue or submit a pull request.
+For enhancements, issues, or contributions, feel free to open an issue or submit a pull request.
